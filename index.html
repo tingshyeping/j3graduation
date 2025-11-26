@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="fylogo.png" type="image/png">
+    <title>毕业感言系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'FangSong', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 900px;
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .title {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 2rem;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            font-weight: 300;
+            letter-spacing: 2px;
+            opacity: 0;
+            animation: fadeInDown 1.5s ease forwards;
+        }
+        
+        .login-container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            max-width: 450px;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeIn 1.5s ease 0.5s forwards;
+        }
+        
+        .login-title {
+            font-size: 2rem;
+            color: #6a11cb;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #6a11cb;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.2);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .message-container {
+            display: none;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: left;
+            line-height: 1.7;
+            font-size: 1.1rem;
+            color: #333;
+            position: relative;
+        }
+        
+        .message-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .message-title {
+            font-size: 2.2rem;
+            color: #6a11cb;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .message-subtitle {
+            color: #777;
+            font-size: 1.1rem;
+        }
+        
+        .message-content {
+            margin-bottom: 30px;
+        }
+        
+        .message-content p {
+            margin-bottom: 1.2rem;
+            text-indent: 2em;
+        }
+        
+        .signature {
+            text-align: right;
+            margin-top: 2rem;
+            font-style: italic;
+            color: #6a11cb;
+            font-weight: 500;
+        }
+        
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(106, 17, 203, 0.1);
+            color: #6a11cb;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(106, 17, 203, 0.2);
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+        
+        .music-control {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        .music-control:hover {
+            transform: scale(1.1);
+            background: white;
+        }
+        
+        .music-control i {
+            font-size: 1.8rem;
+            color: #6a11cb;
+        }
+        
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .floating-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .login-container, .message-container {
+                padding: 30px 20px;
+            }
+            
+            .message-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<!-- Disabled right click -->
+<body oncontextmenu="return false">
+    <div class="floating-elements" id="floatingElements"></div>
+    
+    <div class="container">
+        <h1 class="title">毕业感言系统</h1>
+        
+        <div class="login-container" id="loginContainer">
+            <h2 class="login-title">查看毕业感言</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="userId"><i class="fas fa-user"></i> 用户 ID</label>
+                    <input type="text" id="userId" class="form-control" placeholder="请输入您的 ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> 密码</label>
+                    <input type="password" id="password" class="form-control" placeholder="请输入密码" required>
+                </div>
+                <button type="submit" class="btn">查看毕业感言</button>
+                <div class="error-message" id="errorMessage">
+                    <i class="fas fa-exclamation-circle"></i> ID 或密码错误，请重试
+                </div>
+            </form>
+        </div>
+        
+        <div class="message-container" id="messageContainer">
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> 退出
+            </button>
+            <div class="message-header">
+                <h2 class="message-title" id="userGreeting">亲爱的朋友</h2>
+                <p class="message-subtitle">这是专属于你的毕业留言</p>
+            </div>
+            <div class="message-content" id="messageContent">
+                <!-- 留言内容将通过JavaScript动态加载 -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="music-control" id="musicControl">
+        <i class="fas fa-music"></i>
+    </div>
+    
+    <audio id="bgMusic" loop>
+        <!-- 这里可以替换为实际的音乐文件 -->
+        <source src="mayday ganbei.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script>
+        // 模拟用户数据库
+        const users = {
+            "232051": {
+                password: "michellelai",
+                name: "Michelle",
+                message: `
+                    <p>Hi Michelle，</p>
+                    <p>俗话说得好：“一寸光阴一寸金，寸金难买寸光阴。”三年的初中生涯，说长也不长，说短也不短。这三年里，有欢笑、有泪水、有争吵、有和好，但最重要的是，我们一起走过了。</p>
+                    <p>谢谢你，在我迷茫时鼓励我，愿意听我发疯，在我犯错时原谅我。也许我们不完美，正是因为这些不完美，才让我们的青春如此真实、如此珍贵。</p>
+                    <p>毕业在即，愿你前程似锦，在未来学习的道路上越走越远。希望我们友谊长存，常联系！</p>
+                    <p class="signature">—— 永远的朋友 学斌</p>
+                `
+            },
+            "232058": {
+                password: "kimi1221",
+                name: "Kimi",
+                message: `
+                    <p>halo Kimi，</p>
+                    <p>三年的初中时光转瞬即逝，还记得我们第一次成为同桌时的情景吗？</p>
+                    <p>这三年非常感谢你在我遇到困难时给予我支持和鼓励。最重要的是还可以一起分享八卦！</p>
+                    <p>愿你在未来的学习道路上发光发热，成为一名优秀的画家。无论走到哪个天涯海角，你永远都是我最好的朋友。</p>
+                    <p class="signature">—— 一辈子的朋友 学斌</p>
+                `
+            },
+            "232093": {
+                password: "tzyang1202",
+                name: "子扬",
+                message: `
+                    <p>Hello 子扬，</p>
+                    <p>不知不觉就过了 10 年了，转眼间我们就要毕业了。还记得小时候在幼儿园的时候有跟 Mavis 他们一起玩，然后还一起答应说做一辈子的 Brother!</p>
+                    <p>虽然有时候你弄我很 pekcek, 但是我还是觉得 ok 啦，不要踩到底线就好。</p>
+                    <p>愿你以后在时事队大展宏图，夺下华教杯。希望我们的友谊能继续维持下去。下一个目标：20 年！</p>
+                    <p class="signature">—— 10 年的 Brother 学斌</p>
+                `
+            },
+            "232096": {
+                password: "weizhichong",
+                name: "伟智",
+                message: `
+                    <p>哟伟智，</p>
+                    <p>哇时光过得真快，一下子就毕业了。</p>
+                    <p>虽然你长得有点像佛祖，不过你会在我遇到困难时给予我支持和鼓励。谢谢你！</p>
+                    <p>到了高中不要忘记我，有空记得约打球！高二羽球赛见！</p>
+                    <p class="signature">—— 高二羽球赛敌人 学斌</p>
+                `
+            },
+            "232077": {
+                password: "hoonjiaquan425126055_",
+                name: "家权",
+                message: `
+                    <p>Hi 家权，</p>
+                    <p>三年，也不就才一千多个日夜而已嘛。但是，这三年里承载着我们太多的故事了。</p>
+                    <p>谢谢你接受我发癫发 Reel 給你，希望到了高中还可以继续发 Reel 給你 :D </p>
+                    <p>愿你在理科道路上发光发热! 希望你去了新训回来可以变成 E 人。</p>
+                    <p class="signature">—— 最好的朋友 学斌</p>
+                `
+            },
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginContainer = document.getElementById('loginContainer');
+            const messageContainer = document.getElementById('messageContainer');
+            const loginForm = document.getElementById('loginForm');
+            const errorMessage = document.getElementById('errorMessage');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const userGreeting = document.getElementById('userGreeting');
+            const messageContent = document.getElementById('messageContent');
+            const musicControl = document.getElementById('musicControl');
+            const bgMusic = document.getElementById('bgMusic');
+            const floatingElements = document.getElementById('floatingElements');
+            let isPlaying = false;
+            let currentUser = null;
+            
+            // 创建浮动元素
+            function createFloatingElements() {
+                const colors = [
+                    'rgba(255, 255, 255, 0.3)', 
+                    'rgba(255, 255, 255, 0.2)', 
+                    'rgba(255, 255, 255, 0.15)'
+                ];
+                
+                for (let i = 0; i < 20; i++) {
+                    const element = document.createElement('div');
+                    element.className = 'floating-element';
+                    
+                    const size = Math.random() * 60 + 20;
+                    element.style.width = `${size}px`;
+                    element.style.height = `${size}px`;
+                    element.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    element.style.left = `${Math.random() * 100}vw`;
+                    element.style.animationDelay = `${Math.random() * 15}s`;
+                    element.style.animationDuration = `${Math.random() * 10 + 15}s`;
+                    
+                    floatingElements.appendChild(element);
+                }
+            }
+            
+            // 登录表单提交
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const userId = document.getElementById('userId').value.trim().toLowerCase();
+                const password = document.getElementById('password').value;
+                
+                if (users[userId] && users[userId].password === password) {
+                    // 登录成功
+                    currentUser = users[userId];
+                    loginContainer.style.display = 'none';
+                    messageContainer.style.display = 'block';
+                    userGreeting.textContent = `亲爱的${currentUser.name}`;
+                    messageContent.innerHTML = currentUser.message;
+                    
+                    // 播放音乐
+                    if (!isPlaying) {
+                        playMusic();
+                    }
+                    
+                    // 创建庆祝效果
+                    createCelebration();
+                } else {
+                    // 登录失败
+                    errorMessage.style.display = 'block';
+                    setTimeout(() => {
+                        errorMessage.style.display = 'none';
+                    }, 3000);
+                }
+            });
+            
+            // 退出登录
+            logoutBtn.addEventListener('click', function() {
+                messageContainer.style.display = 'none';
+                loginContainer.style.display = 'block';
+                loginForm.reset();
+                currentUser = null;
+            });
+            
+            // 音乐控制
+            musicControl.addEventListener('click', function() {
+                if (isPlaying) {
+                    bgMusic.pause();
+                    isPlaying = false;
+                    musicControl.innerHTML = '<i class="fas fa-music"></i>';
+                } else {
+                    playMusic();
+                }
+            });
+            
+            // 播放音乐
+            function playMusic() {
+                bgMusic.play().then(() => {
+                    isPlaying = true;
+                    musicControl.innerHTML = '<i class="fas fa-pause"></i>';
+                }).catch(e => {
+                    console.log("自动播放被阻止，请手动点击音乐控制按钮");
+                    musicControl.style.background = "#ffeb3b";
+                    musicControl.innerHTML = '<i class="fas fa-play" style="color:#333"></i>';
+                });
+            }
+            
+            // 创建庆祝效果
+            function createCelebration() {
+                const colors = ['#FFC107', '#E91E63', '#9C27B0', '#2196F3', '#4CAF50'];
+                
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'absolute';
+                    confetti.style.width = '10px';
+                    confetti.style.height = '10px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.borderRadius = '50%';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = '-20px';
+                    confetti.style.opacity = '0';
+                    confetti.style.animation = `fall ${Math.random() * 3 + 2}s ease forwards`;
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    document.body.appendChild(confetti);
+                    
+                    // 动画结束后移除元素
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 5000);
+                }
+                
+                // 添加CSS动画
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes fall {
+                        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+                        100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            // 初始化浮动元素
+            createFloatingElements();
+        });
+    </script>
+</body>
+</html>
